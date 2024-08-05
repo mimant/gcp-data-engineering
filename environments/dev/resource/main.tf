@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+provider "google" {
+  version = "~> 2.5.0"
+  project = "${var.project_id}"
+}
+
 resource "google_bigquery_dataset" "datasets" {
   for_each = local.datasets
 
