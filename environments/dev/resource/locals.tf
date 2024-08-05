@@ -9,4 +9,3 @@ tables = {
     file => ( jsondecode(file("${path.module}/${file}")))
 
  }
-}
