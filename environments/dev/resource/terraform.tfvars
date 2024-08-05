@@ -1,1 +1,1 @@
-project="gcp-batch-dev"
+project_id="gcp-batch-dev"
