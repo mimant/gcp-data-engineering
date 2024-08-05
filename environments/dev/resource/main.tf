@@ -16,7 +16,7 @@ provider "google" {
   project = "${var.project_id}"
 }
 
-resource "google_bigquery_dataset" "datasets" {
+module "google_bigquery_dataset" "datasets" {
   for_each = local.datasets
 
   project                     = var.project_id
@@ -27,7 +27,7 @@ resource "google_bigquery_dataset" "datasets" {
 
 }
 
-resource "google_bigquery_table" "tables" {
+module "google_bigquery_table" "tables" {
   for_each = local.tables
 
   project                     = var.project_id
