@@ -30,23 +30,22 @@ steps:
   args: 
   - '-c'
   - |
-      if [ -d "environments/$BRANCH_NAME/" ]; then
-        cd environments/$BRANCH_NAME
+      if [ $BRANCH_NAME = "develop" ]; then
+        cd environments/dev/resource
         terraform init
-      else
-        for dir in environments/*/
-        do 
-          cd ${dir}   
-          env=${dir%*/}
-          env=${env#*/}
           echo ""
           echo "*************** TERRAFORM INIT ******************"
-          echo "******* At environment: ${env} ********"
+          echo "******* At environment: ${BRANCH_NAME} ********"
           echo "*************************************************"
-          terraform init || exit 1
-          cd ../../
-        done
       fi 
+      if [ $BRANCH_NAME = "master" ]; then
+        cd environments/pd/resource
+        terraform init
+          echo ""
+          echo "*************** TERRAFORM INIT ******************"
+          echo "******* At environment: ${BRANCH_NAME} ********"
+          echo "*************************************************"
+      fi
 
 # [START tf-plan]
 - id: 'tf plan'
@@ -55,22 +54,21 @@ steps:
   args: 
   - '-c'
   - | 
-      if [ -d "environments/$BRANCH_NAME/" ]; then
-        cd environments/$BRANCH_NAME
+      if [ $BRANCH_NAME = "develop" ]; then
+        cd environments/dev/resource
         terraform plan
-      else
-        for dir in environments/*/
-        do 
-          cd ${dir}   
-          env=${dir%*/}
-          env=${env#*/}  
           echo ""
           echo "*************** TERRAFORM PLAN ******************"
-          echo "******* At environment: ${env} ********"
+          echo "******* At environment: ${BRANCH_NAME} ********"
           echo "*************************************************"
-          terraform plan || exit 1
-          cd ../../
-        done
+      fi
+      if [ $BRANCH_NAME = "master" ]; then
+        cd environments/pd/resource
+        terraform plan
+          echo ""
+          echo "*************** TERRAFORM PLAN ******************"
+          echo "******* At environment: ${BRANCH_NAME} ********"
+          echo "*************************************************"
       fi 
 # [END tf-plan]
 
@@ -81,13 +79,21 @@ steps:
   args: 
   - '-c'
   - | 
-      if [ -d "environments/$BRANCH_NAME/" ]; then
-        cd environments/$BRANCH_NAME      
-        terraform apply -auto-approve
-      else
-        echo "***************************** SKIPPING APPLYING *******************************"
-        echo "Branch '$BRANCH_NAME' does not represent an official environment."
-        echo "*******************************************************************************"
+      if [ $BRANCH_NAME = "develop" ]; then
+        cd environments/dev/resource
+        terraform apply --auto-approve
+          echo ""
+          echo "*************** TERRAFORM APPLY ******************"
+          echo "******* At environment: ${BRANCH_NAME} ********"
+          echo "*************************************************"
+      fi
+      if [ $BRANCH_NAME = "master" ]; then
+        cd environments/pd/resource
+        terraform apply --auto-approve
+          echo ""
+          echo "*************** TERRAFORM APPLY ******************"
+          echo "******* At environment: ${BRANCH_NAME} ********"
+          echo "*************************************************"
       fi
 options:
   logging: CLOUD_LOGGING_ONLY
