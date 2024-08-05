@@ -12,19 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+resource "google_bigquery_dataset" "datasets" {
+  for_each = local.datasets
 
-locals {
-  env = "dev"
+  project                     = var.project_id
+  dataset_id                  = each.value["dataset_id"]
+  friendly_name               = each.value["friendly_name"]
+  description                 = each.value["description"]
+  location                    = each.value["location"]
+
 }
 
-provider "google" {
-  version = "~> 2.5.0"
-  project = "${var.project}"
-}
+resource "google_bigquery_table" "tables" {
+  for_each = local.tables
 
-module "bigquery" {
-  source  = "../../modules/bigquery"
-  project = "${var.project}"
-  env     = "${local.env}"
-}
+  project                     = var.project_id
+  dataset_id                  = each.value["dataset_id"]
+  table_id                    = each.value["table_id"]
+  #time_partitioning           = each.value["time_partitioning"]
+  schema                      = jsonencode(each.value.schema)
 
+}
