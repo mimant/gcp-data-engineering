@@ -33,7 +33,16 @@ resource "google_bigquery_table" "tables" {
   project                     = var.project_id
   dataset_id                  = each.value["dataset_id"]
   table_id                    = each.value["table_id"]
-  time_partitioning           = jsonencode(each.value.time_partitioning)
   schema                      = jsonencode(each.value.schema)
+  deletion_protection         = false
+  dynamic "time_partitioning" {
+   for_each = each.value.time_partitioning != null ? [each.value.time_partitioning] : [] 
+   content{
+     type  = each.value.time_partitioning.type
+     field = each.value.time_partitioning.field
+     require_partition_filter = each.value.time_partitioning.require_partition_filter
+     expiration_ms = try(each.value.time_partitioning._ms, null)
+    }
+  }
   depends_on = [ google_bigquery_dataset.datasets ]
 }

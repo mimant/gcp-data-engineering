@@ -1,9 +1,17 @@
   {
       "dataset_id": "dataset2",
       "table_id"   : "table2",
-      "time_partitioning": { "type" : "DAY"},
-          "schema":[
-           { "name": "permalink",
+      "time_partitioning": { 
+	 "type" : "DAY",
+	  "field" : "insert_timestamp",
+	  "expiration_ms" : null,
+	  "require_partition_filter" : false
+      },
+      "clustering" : [
+        "state"
+      ],
+      "schema":[
+       {  "name": "permalink",
           "type": "STRING",
           "mode": "NULLABLE",
           "description": "The Permalink"
@@ -13,6 +21,12 @@
           "type": "STRING",
           "mode": "NULLABLE",
           "description": "State where the head office is located"
+       },
+       {
+          "name": "insert_timestamp",
+          "type": "TIMESTAMP",
+          "mode": "NULLABLE",
+          "description": "insert timestamp"
        }
 
           ]
