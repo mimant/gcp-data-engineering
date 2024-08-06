@@ -33,7 +33,7 @@ resource "google_bigquery_table" "tables" {
   project                     = var.project_id
   dataset_id                  = each.value["dataset_id"]
   table_id                    = each.value["table_id"]
-  #time_partitioning           = each.value["time_partitioning"]
+  time_partitioning           = jsonencode(each.value.time_partitioning)
   schema                      = jsonencode(each.value.schema)
   depends_on = [ google_bigquery_dataset.datasets ]
 }
